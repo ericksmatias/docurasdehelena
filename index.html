@@ -31,6 +31,7 @@
 .Hero_Scroll{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--beige,#f6efe4);pointer-events:none;transition:opacity .4s ease}
 .Hero_Scroll svg{width:26px;height:26px;animation:heroScrollBob 1.6s ease-in-out infinite}
 .Hero_Scroll.Hidden{opacity:0}
+.Hero_Scroll.Hidden svg{animation:none}
 @keyframes heroScrollBob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 </style>
 <link href="assets/img/favicon.png" id="favicon" rel="icon" type="image/png"/>
