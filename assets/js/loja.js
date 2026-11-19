@@ -163,12 +163,18 @@ if (hv && hv.getAttribute("data-hero-video")) {
   const secao = hv.closest("section") || hv.parentElement;
   const img = $("img", hv.parentElement);
   hv.addEventListener("loadedmetadata", () => { hv.classList.add("on"); if (img) img.style.opacity = "0"; hv.pause(); });
-  let alvo = 0;
+  let suave = 0, ultimo = -1;
   const loop = () => {
     if (hv.duration) {
+      const fim = Math.max(0, hv.duration - 0.05);
       const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, secao.offsetHeight)));
-      alvo = p * hv.duration;
-      if (Math.abs(hv.currentTime - alvo) > 0.01) hv.currentTime += (alvo - hv.currentTime) * 0.35;
+      const alvo = p * fim;
+      suave += (alvo - suave) * 0.25;               // suaviza nos dois sentidos
+      if (Math.abs(alvo - suave) < 0.005) suave = alvo;
+      if (!hv.seeking && Math.abs(suave - ultimo) > 0.001) {
+        if (!hv.paused) hv.pause();
+        hv.currentTime = suave; ultimo = suave;
+      }
     }
     requestAnimationFrame(loop);
   };
