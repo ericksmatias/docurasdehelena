@@ -16,7 +16,7 @@ class Canvas {
     for (let i = 0; i < number; i++) {
       const randomSize = Math.random() * (maxSize - minSize) + minSize,
         crumb = new Crumb(x + i * minSize / 2, y - minSize * number / 4 + i * minSize / 2, randomSize, color, size / 48);
-      this.crumbs.push(crumb)
+      this.crumbs.push(crumb), this.sujo = !0
     }
   }
   draw() {
@@ -37,7 +37,7 @@ class Canvas {
     })
   }
   loop() {
-    this.now = Date.now(), this.elapsed = this.now - this.then, this.elapsed > this.fpsInterval && (this.then = this.now - this.elapsed % this.fpsInterval, this.update(), this.draw()), requestAnimationFrame(this.loop.bind(this))
+    this.now = Date.now(), this.elapsed = this.now - this.then, this.elapsed > this.fpsInterval && (this.then = this.now - this.elapsed % this.fpsInterval, (this.crumbs.length || this.sujo) && (this.update(), this.draw(), this.sujo = this.crumbs.length > 0)), requestAnimationFrame(this.loop.bind(this))
   }
 }
 const animationDuration = 1,

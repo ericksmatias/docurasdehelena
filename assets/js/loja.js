@@ -158,46 +158,55 @@ if (form) {
 /* ---------- vídeo do hero (opcional, avança com a rolagem) ---------- */
 const hv = $("[data-hero-video]");
 if (hv && hv.getAttribute("data-hero-video")) {
-  // Sequência de quadros desenhada em <canvas>: sem "seek" de vídeo, então rola liso nos dois sentidos.
-  const TOTAL = 96, pasta = ROOT + "assets/video/frames/";
+  // Hero: sequência de quadros em <canvas> presa na tela enquanto o vídeo "roda" na rolagem.
+  // Leve de propósito: no celular usa menos quadros, já recortados em vertical (pouca memória),
+  // só redesenha quando a rolagem muda e não recalcula nada quando a barra do Safari sobe/desce.
+  const movel = window.innerWidth <= 768;
+  const TOTAL = movel ? 48 : 96, pasta = ROOT + "assets/video/" + (movel ? "frames-m/" : "frames/");
   const cv = document.createElement("canvas");
-  cv.className = "Hero_Video"; cv.width = 1024; cv.height = 576;
+  cv.className = "Hero_Video"; cv.width = movel ? 400 : 1024; cv.height = movel ? 720 : 576;
+  if (movel) cv.style.objectPosition = "center";
   hv.replaceWith(cv);
-  const ctx = cv.getContext("2d");
+  const ctx = cv.getContext("2d", { alpha: false });
   const secao = cv.closest("section") || cv.parentElement;
   const wrap = cv.closest(".Hero_Wrapper") || secao;
-  // Hero fixo na tela enquanto o vídeo roda; depois o resto do site rola.
-  const ajustar = () => {
-    extra = Math.round(window.innerHeight * 1.6);
-    secao.style.height = (wrap.offsetHeight + extra) + "px";
-    if (window.ScrollTrigger) ScrollTrigger.refresh();
-  };
-  let extra = 1;
-  wrap.style.position = "sticky"; wrap.style.top = "0";
-  ajustar(); window.addEventListener("resize", ajustar);
   const img = $("img", cv.parentElement);
+  let extra = 1, topo = 0, larg = window.innerWidth, altBase = window.innerHeight;
+  wrap.style.position = "sticky"; wrap.style.top = "0";
+  const medir = () => {
+    extra = Math.round(altBase * 1.6);
+    secao.style.height = (wrap.offsetHeight + extra) + "px";
+    topo = secao.getBoundingClientRect().top + window.scrollY;
+  };
+  medir();
+  let tRes;
+  window.addEventListener("resize", () => {             // ignora a barra do Safari (muda só a altura)
+    if (window.innerWidth === larg) return;
+    clearTimeout(tRes);
+    tRes = setTimeout(() => { larg = window.innerWidth; altBase = window.innerHeight; medir(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 250);
+  });
   const quadros = new Array(TOTAL);
-  let desenhado = -1, pos = 0, pronto = false;
+  let desenhado = -1, pos = 0, pronto = false, rodando = false;
   const carregar = i => {
     const im = new Image(); im.decoding = "async";
-    im.onload = () => { quadros[i] = im; if (!pronto) { pronto = true; cv.classList.add("on"); if (img) img.style.opacity = "0"; } };
+    im.onload = () => { quadros[i] = im; if (!pronto) { pronto = true; cv.classList.add("on"); if (img) img.style.opacity = "0"; } if (i === 0) pedir(); };
     im.src = pasta + "f" + String(i + 1).padStart(3, "0") + ".webp";
   };
-  carregar(0);
-  for (let i = 1; i < TOTAL; i++) setTimeout(() => carregar(i), 0);
-  const loop = () => {
-    const p = Math.min(1, Math.max(0, -secao.getBoundingClientRect().top / extra));
-    pos += (p * (TOTAL - 1) - pos) * 0.18;
-    if (Math.abs(p * (TOTAL - 1) - pos) < 0.01) pos = p * (TOTAL - 1);
+  let prox = 1;
+  const lote = () => { for (let k = 0; k < 6 && prox < TOTAL; k++) carregar(prox++); if (prox < TOTAL) setTimeout(lote, 60); };
+  carregar(0); setTimeout(lote, 300);
+  const passo = () => {
+    const alvo = Math.min(1, Math.max(0, (window.scrollY - topo) / extra)) * (TOTAL - 1);
+    pos += (alvo - pos) * 0.25;
+    if (Math.abs(alvo - pos) < 0.02) pos = alvo;
     let i = Math.round(pos);
-    while (i > 0 && !quadros[i]) i--;              // usa o quadro carregado mais próximo
-    if (quadros[i] && i !== desenhado) {
-      if (quadros[i].naturalWidth && cv.height !== Math.round(cv.width * quadros[i].naturalHeight / quadros[i].naturalWidth)) cv.height = Math.round(cv.width * quadros[i].naturalHeight / quadros[i].naturalWidth);
-      ctx.drawImage(quadros[i], 0, 0, cv.width, cv.height); desenhado = i;
-    }
-    requestAnimationFrame(loop);
+    while (i > 0 && !quadros[i]) i--;
+    if (quadros[i] && i !== desenhado) { ctx.drawImage(quadros[i], 0, 0, cv.width, cv.height); desenhado = i; }
+    if (pos !== alvo) requestAnimationFrame(passo); else rodando = false;   // para quando não há o que animar
   };
-  requestAnimationFrame(loop);
+  function pedir() { if (!rodando) { rodando = true; requestAnimationFrame(passo); } }
+  window.addEventListener("scroll", pedir, { passive: true });
+  pedir();
 }
 
 atualizarContador(); renderComanda();
