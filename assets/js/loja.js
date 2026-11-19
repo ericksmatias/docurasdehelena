@@ -158,24 +158,32 @@ if (form) {
 /* ---------- vídeo do hero (opcional, avança com a rolagem) ---------- */
 const hv = $("[data-hero-video]");
 if (hv && hv.getAttribute("data-hero-video")) {
-  hv.src = ROOT + hv.getAttribute("data-hero-video");
-  hv.muted = true; hv.playsInline = true; hv.preload = "auto"; hv.disableRemotePlayback = true; hv.load();
-  const secao = hv.closest("section") || hv.parentElement;
-  const img = $("img", hv.parentElement);
-  hv.addEventListener("loadedmetadata", () => { hv.classList.add("on"); if (img) img.style.opacity = "0"; hv.pause(); });
-  let suave = 0, ultimo = -1;
+  // Sequência de quadros desenhada em <canvas>: sem "seek" de vídeo, então rola liso nos dois sentidos.
+  const TOTAL = 96, pasta = ROOT + "assets/video/frames/";
+  const cv = document.createElement("canvas");
+  cv.className = "Hero_Video"; cv.width = 1024; cv.height = 576;
+  hv.replaceWith(cv);
+  const ctx = cv.getContext("2d");
+  const secao = cv.closest("section") || cv.parentElement;
+  const img = $("img", cv.parentElement);
+  const quadros = new Array(TOTAL);
+  let desenhado = -1, pos = 0, pronto = false;
+  const carregar = i => {
+    const im = new Image(); im.decoding = "async";
+    im.onload = () => { quadros[i] = im; if (!pronto) { pronto = true; cv.classList.add("on"); if (img) img.style.opacity = "0"; } };
+    im.src = pasta + "f" + String(i + 1).padStart(3, "0") + ".webp";
+  };
+  carregar(0);
+  for (let i = 1; i < TOTAL; i++) setTimeout(() => carregar(i), 0);
   const loop = () => {
-    if (hv.duration) {
-      const fim = Math.max(0, hv.duration - 0.05);
-      const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, secao.offsetHeight)));
-      const alvo = p * fim;
-      suave += (alvo - suave) * 0.2;               // suaviza nos dois sentidos
-      if (Math.abs(alvo - suave) < 0.005) suave = alvo;
-      if (!hv.seeking && Math.abs(suave - ultimo) > 0.001) {
-        if (!hv.paused) hv.pause();
-        ultimo = suave;
-        if (hv.fastSeek) hv.fastSeek(suave); else hv.currentTime = suave;
-      }
+    const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, secao.offsetHeight)));
+    pos += (p * (TOTAL - 1) - pos) * 0.18;
+    if (Math.abs(p * (TOTAL - 1) - pos) < 0.01) pos = p * (TOTAL - 1);
+    let i = Math.round(pos);
+    while (i > 0 && !quadros[i]) i--;              // usa o quadro carregado mais próximo
+    if (quadros[i] && i !== desenhado) {
+      if (quadros[i].naturalWidth && cv.height !== Math.round(cv.width * quadros[i].naturalHeight / quadros[i].naturalWidth)) cv.height = Math.round(cv.width * quadros[i].naturalHeight / quadros[i].naturalWidth);
+      ctx.drawImage(quadros[i], 0, 0, cv.width, cv.height); desenhado = i;
     }
     requestAnimationFrame(loop);
   };
