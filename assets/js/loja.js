@@ -159,7 +159,7 @@ if (form) {
 const hv = $("[data-hero-video]");
 if (hv && hv.getAttribute("data-hero-video")) {
   hv.src = ROOT + hv.getAttribute("data-hero-video");
-  hv.muted = true; hv.playsInline = true; hv.preload = "auto"; hv.load();
+  hv.muted = true; hv.playsInline = true; hv.preload = "auto"; hv.disableRemotePlayback = true; hv.load();
   const secao = hv.closest("section") || hv.parentElement;
   const img = $("img", hv.parentElement);
   hv.addEventListener("loadedmetadata", () => { hv.classList.add("on"); if (img) img.style.opacity = "0"; hv.pause(); });
@@ -169,11 +169,12 @@ if (hv && hv.getAttribute("data-hero-video")) {
       const fim = Math.max(0, hv.duration - 0.05);
       const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, secao.offsetHeight)));
       const alvo = p * fim;
-      suave += (alvo - suave) * 0.25;               // suaviza nos dois sentidos
+      suave += (alvo - suave) * 0.2;               // suaviza nos dois sentidos
       if (Math.abs(alvo - suave) < 0.005) suave = alvo;
       if (!hv.seeking && Math.abs(suave - ultimo) > 0.001) {
         if (!hv.paused) hv.pause();
-        hv.currentTime = suave; ultimo = suave;
+        ultimo = suave;
+        if (hv.fastSeek) hv.fastSeek(suave); else hv.currentTime = suave;
       }
     }
     requestAnimationFrame(loop);
