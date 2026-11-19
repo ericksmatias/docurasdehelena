@@ -1,0 +1,3 @@
+Coloque aqui o video do hero com o nome hero.mp4 (4 segundos, sem audio, H.264).
+Se o arquivo existir, o video avanca conforme a rolagem; se nao existir, o site usa a imagem.
+Para forcar so a imagem: em assets/js/loja.js troque HERO_USAR_VIDEO para false.

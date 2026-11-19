@@ -23,10 +23,10 @@
 }
 
 :root {
-  --pink: #ffa7ee;
-  --beige: #f8f8f2;
-  --blue: #147c98;
-  --dark: #112229;
+  --pink: #f7e08e; /* amarelo manteiga */
+  --beige: #fbf7ee; /* creme */
+  --blue: #7d5a9b; /* lavanda */
+  --dark: #2b1d38; /* ameixa escuro */
   --text-font: "Apfel Grotezk", "Helvetica Neue", Arial, sans-serif;
   --hero-font: "Apfel Grotezk", sans-serif;
   --title-font: "Apfel Grotezk", sans-serif;

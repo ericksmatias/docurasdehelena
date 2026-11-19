@@ -1,35 +1,26 @@
 # Doçuras de Helena — site vitrine
 
-## Como abrir
-Abra **esta pasta** no VS Code e rode o Live Server em `index.html` (a pasta precisa ser a raiz do servidor).
+## Abrir no VS Code
+Abra **esta pasta** e rode o Live Server em `index.html`. As páginas usam URLs limpas (`/bolos/`, `/sobre/`, `/produtos/bolo-de-chocolate/`), então funciona igual no GitHub Pages. O arquivo `.nojekyll` precisa ir junto no deploy.
 
-## Estrutura
-- `index.html`, `colecoes/`, `paginas/`, `produtos/` → **PT-BR**
-- `en/` → **inglês** (`collections/`, `pages/`, `products/`)
-- `assets/css`, `assets/js`, `assets/fonts`, `assets/img` (AVIF)
-- `_imagens-antigas/` → imagens do site de estudo original, guardadas só para consulta (nada aponta para elas; pode apagar)
-- `_fotos-originais-enviadas/` → logo e catálogo que você mandou
-- Botão **English / Português** do menu: usa os `<link rel="alternate" hreflang>` do `<head>` de cada página.
-
-## Para trocar (Ctrl+Shift+F no VS Code)
-| Procure por | O que é |
+## Onde mudar cada coisa
+| O quê | Onde |
 |---|---|
-| `5500000000000` | número do WhatsApp (DDI+DDD+número, só dígitos) — está nas páginas |
-| `(00) 00000-0000` | número exibido no rodapé |
-| `Instagram` / `href="#"` no rodapé | link do Instagram |
-| `[Depoimento de cliente` | 5 depoimentos placeholder |
-| `[Escreva aqui` / `[História` / `[Como` etc. | textos da página Sobre |
-| `slot-` | imagens pendentes (veja IMAGENS-PENDENTES.md) |
+| Número do WhatsApp, preços, nomes e coberturas dos bolos, texto da comanda | `assets/js/loja.js` (topo do arquivo: `WHATSAPP`, `PRECO_COM`, `PRECO_SEM`, `PRODUTOS`) |
+| Número no rodapé e botões de WhatsApp das páginas | busque `5517981235987` e `98123-5987` (Ctrl+Shift+F) |
+| Instagram | busque `docurasde_helena` |
+| Textos das páginas | cada `index.html` dentro das pastas |
+| Cores | `assets/css/style.css`, bloco `:root` (`--blue` lavanda, `--pink` amarelo manteiga, `--dark` ameixa, `--beige` creme) |
+| Botões, comanda, busca, mobile | `assets/css/loja.css` |
 
-## Produtos
-Os 9 bolos, preços e coberturas estão em cada `produtos/*.html` (e `en/products/*.html`):
-- `data-product-info` e `<script type="application/json" id="product-variants-json-…">` → preços em centavos (3000 = R$ 30,00 com cobertura; 2500 = R$ 25,00 sem)
-- texto de preço visível (`Product_Price`, `bvs-btn-price`) e cards em `colecoes/bolos.html` / `index.html`
-O botão "Pedir no WhatsApp" abre `wa.me/<número>?text=Olá! Gostaria de encomendar: <bolo>`.
+## Como funciona o pedido
+Na página do bolo: escolhe **com/sem cobertura**, **qual cobertura** e a quantidade → **Adicionar à comanda** (ícone da sacola no topo) ou **Pedir agora**. Na comanda o cliente informa nome, data e observações e toca em **Enviar pedido no WhatsApp**, que abre a conversa com a comanda pronta. A comanda fica salva no navegador (localStorage). A lupa filtra os 9 bolos.
 
-## Identidade visual
-- Logo no topo: `assets/img/logo-escuro.svg` e `logo-claro.svg` (texto "Doçuras de" em Cormorant + "Helena" em Great Vibes, convertidos em curvas)
-- Nome grande do rodapé: fonte Great Vibes (`assets/fonts/GreatVibes-Regular.woff2`, licença OFL)
-- Selo da logo (sem fundo preto): `assets/img/selo-logo.avif`
-- Abelhinhas: `assets/img/abelha.svg` e favicons `favicon*.png`
-- As cores do site (azul-petróleo e rosa) ainda são as do original; para lavanda/creme da logo, edite as variáveis `:root` em `assets/css/style.css`.
+## Vídeo de 4 s no hero (opcional)
+Em `index.html`, procure `data-hero-video=""` e preencha, por exemplo, `data-hero-video="assets/video/hero.mp4"`. O vídeo avança conforme a rolagem e chega ao fim quando o hero sai da tela. Vazio = só a foto. Dicas: MP4 H.264, sem áudio, ~1280 px de largura, até 2 MB, e para rolar suave exporte com um quadro-chave por quadro (`ffmpeg -g 1`).
+
+## Easter egg
+Clicar em "Desenvolvido por Erick Matias" (rodapé de qualquer página) abre o gatito. Arquivo: `assets/img/gatito.gif` (1 MB; se quiser, comprima).
+
+## Pastas
+`_imagens-antigas/` imagens do site de estudo (pode apagar), `_fotos-originais-enviadas/` logo e catálogo.

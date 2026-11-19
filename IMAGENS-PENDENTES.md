@@ -1,13 +1,12 @@
-# Imagens pendentes (placeholders lilás)
-Gere a imagem, salve **em AVIF com o mesmo nome** em `assets/img/` (ou troque o `src` nas páginas).
+# Imagens pendentes e provisórias
+Pendentes (placeholder lilás, 1200×1500, salve em AVIF com o mesmo nome em `assets/img/`):
+- `slot-produto-formigueiro-foto-real.avif`
+- `slot-produto-bolo-mole-foto-real.avif`
 
-| Arquivo | Onde aparece | Tamanho ideal |
-|---|---|---|
-| `slot-vitrine-07.avif`, `slot-vitrine-08.avif`, `slot-vitrine-09.avif` | carrossel "As melhores coisas da vida são doces" (home) | 500×750 (vertical) |
-| `slot-sobre-01.avif` | Sobre, 1ª imagem da linha do tempo | 1440×931 |
-| `slot-produto-<sabor>-foto-real.avif` (9 arquivos: chocolate, coco, cenoura, milho, formigueiro, aipim, fuba, bolo-mole, laranja) | 2ª foto da galeria de cada bolo | 1200×1500 |
-
-## Imagens provisórias (trocar quando tiver as boas)
-- `produto-<sabor>.avif`: recortes das ilustrações do catálogo (baixa resolução, ampliadas)
-- `sarah-e-helena.avif`, `helena.avif`, `helena-4x3.avif` (marcadas "trocar depois")
-- `foto-bolo-01..04.avif`, `doces-finos-01/02.avif`, `hero-home.avif`
+Provisórias (trocar quando tiver as boas):
+- `produto-<sabor>.avif` — recortes do catálogo (ilustrações, 1ª foto de cada bolo)
+- `real-<sabor>.avif` — fotos reais ligadas ao sabor pela legenda do WhatsApp (chocolate, coco, cenoura, milho, aipim, fubá, laranja); confira se estão no bolo certo
+- `foto-*.avif`, `foto-bolo-01..04.avif` — carrossel e menu; `hero-home.avif` — hero
+- `doce-pote`, `doce-caixeta`, `doce-pudim`, `doce-fino-bemcasado` — seção "Outros doces" em /bolos/
+- `doces-finos-mesa.avif` — página Casamento; `helena.avif` — Contato
+- `sobre-a`, `sarah-e-helena`, `sobre-b` — página Sobre (exibidas sem corte)

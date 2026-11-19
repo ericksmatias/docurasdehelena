@@ -776,3 +776,13 @@ button.Product_Item_Submit.is-sold-out {
   padding-right: 18px;
   white-space: nowrap
 }
+
+/* fotos da página Sobre são verticais (seletor mais forte porque timeline.css carrega depois) */
+.Timeline_Container .Timeline_Image {
+  aspect-ratio: 3/4
+}
+
+.Timeline_Container .Timeline_Image img {
+  object-fit: cover;
+  object-position: center 25%
+}

@@ -1,0 +1,120 @@
+/* ===== Loja: comanda, busca, opções, botões, ajustes de celular ===== */
+:root { --wa: #1faa5a; --wa-dark: #178a48; --lav: #7d5a9b; --lav-soft: #efe7f6; --butter: #f7e08e; --ink: #2b1d38 }
+
+/* ícones do cabeçalho */
+.main-menu_right { display: flex; align-items: center; gap: .6rem }
+.menu_icon.Loja_Icone { position: relative; background: none; border: 0; padding: 0; margin-left: 1.1rem; cursor: pointer; display: block; width: 1.6rem; height: 1.6rem }
+.menu_icon.Loja_Icone .Icon { width: 100%; height: 100%; display: block }
+@media (max-width: 768px) { .main-menu_right { margin-left: 0 } .menu_icon.Loja_Icone { width: 1.9rem; height: 1.9rem; margin-left: 1rem } }
+.cart-count { position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--butter); color: var(--ink); font: 700 11px/18px var(--text-font); text-align: center; display: none; padding: 0 4px }
+.cart-count.on { display: block }
+
+/* fechar do menu lateral (corrige o X gigante no celular) */
+.Menu_Drawer .Drawer_Close { width: 32px; height: 32px; flex: none; padding: 0; border: 0; background: none; cursor: pointer }
+.Menu_Drawer .Drawer_Close .Icon { width: 100%; height: 100% }
+
+/* painéis */
+.Loja_Overlay { position: fixed; inset: 0; background: rgba(43, 29, 56, .55); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 9000 }
+.Loja_Overlay.open { opacity: 1; pointer-events: all }
+body.Loja_Travado { overflow: hidden }
+.Loja_Panel { position: fixed; top: 0; right: 0; height: 100dvh; width: min(440px, 100vw); background: var(--beige); color: var(--ink); z-index: 9001; display: flex; flex-direction: column; transform: translateX(105%); visibility: hidden; transition: transform .35s var(--ulu-curve), visibility 0s .35s }
+.Loja_Panel.open { transform: none; visibility: visible; transition-delay: 0s; box-shadow: -12px 0 40px rgba(0, 0, 0, .18) }
+.Loja_Panel * { line-height: 1.25 }
+.Loja_Head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid rgba(43, 29, 56, .12) }
+.Loja_Head h3 { margin: 0; font: 800 1.4rem var(--title-font); text-transform: uppercase }
+.Loja_Fechar { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--lav-soft); color: var(--ink); font-size: 22px; cursor: pointer }
+.Loja_Body { flex: 1; overflow-y: auto; padding: 14px 20px; -webkit-overflow-scrolling: touch }
+.Loja_Foot { padding: 14px 20px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(43, 29, 56, .12); background: #fff }
+.Loja_Vazio { text-align: center; padding: 40px 10px; opacity: .7 }
+.Loja_Item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px dashed rgba(43, 29, 56, .18) }
+.Loja_Item img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; background: var(--lav-soft); flex: none }
+.Loja_Item_Info { display: flex; flex-direction: column; gap: 3px; font-size: .95rem; min-width: 0 }
+.Loja_Item_Info span { opacity: .75; font-size: .88rem }
+.Loja_Qtd { display: flex; align-items: center; gap: 8px; margin-top: 6px }
+.Loja_Qtd button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: var(--lav); color: #fff; font-size: 18px; cursor: pointer }
+.Loja_Qtd .Loja_Remover { width: auto; background: none; color: var(--lav); font-size: .82rem; text-decoration: underline; margin-left: auto }
+.Loja_Foot input, .Loja_Foot textarea { width: 100%; border: 1.5px solid rgba(43, 29, 56, .2); border-radius: 12px; padding: 11px 13px; font: 500 16px var(--text-font); background: var(--beige); margin-bottom: 8px; color: var(--ink) }
+.Loja_Foot textarea { height: 56px; resize: none }
+.Loja_Total { display: flex; justify-content: space-between; align-items: baseline; margin: 6px 0 12px; font-size: 1.05rem }
+.Loja_Total strong { font: 800 1.5rem var(--title-font) }
+
+/* botões bonitos */
+.Loja_Btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 54px; padding: 14px 22px; border-radius: 999px; border: 0; cursor: pointer; text-decoration: none; font: 700 1rem var(--text-font); letter-spacing: .01em; transition: transform .15s, box-shadow .2s, background .2s; -webkit-tap-highlight-color: transparent }
+.Loja_Btn:active { transform: scale(.98) }
+.Loja_Btn--wa { background: var(--wa); color: #fff; box-shadow: 0 8px 20px rgba(31, 170, 90, .32) }
+.Loja_Btn--wa:hover { background: var(--wa-dark) }
+.Loja_Btn--wa.off { opacity: .45; pointer-events: none; box-shadow: none }
+.Loja_Btn--primary { background: var(--lav); color: #fff; box-shadow: 0 8px 20px rgba(125, 90, 155, .3) }
+.Loja_Btn--primary:hover { background: #6a4a86 }
+.Loja_Btn--primary.ok { background: var(--wa) }
+.Loja_Btn--ghost { background: var(--lav-soft); color: var(--ink) }
+.Loja_Btn--small { min-height: 44px; padding: 10px 16px; font-size: .92rem }
+.Loja_Btn svg { width: 22px; height: 22px; flex: none }
+
+/* opções do produto */
+.Loja_Form { display: flex; flex-direction: column; gap: 18px; margin-top: 18px }
+.Loja_Form * { line-height: 1.25 }
+.Loja_Label { margin: 0 0 8px; font: 700 .95rem var(--text-font); text-transform: uppercase; letter-spacing: .04em }
+.Loja_Chips { display: flex; flex-wrap: wrap; gap: 10px }
+.Loja_Chip { flex: 1 1 140px; min-height: 52px; padding: 10px 16px; border-radius: 16px; border: 2px solid rgba(43, 29, 56, .18); background: #fff; color: var(--ink); font: 600 1rem var(--text-font); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; transition: .15s; -webkit-tap-highlight-color: transparent }
+.Loja_Chip small { font-weight: 500; opacity: .7; font-size: .85rem }
+.Loja_Chip.is-on { border-color: var(--lav); background: var(--lav); color: #fff; box-shadow: 0 6px 16px rgba(125, 90, 155, .3) }
+.Loja_Stepper { display: inline-flex; align-items: center; gap: 14px; background: #fff; border: 2px solid rgba(43, 29, 56, .12); border-radius: 999px; padding: 6px }
+.Loja_Stepper button { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--butter); color: var(--ink); font-size: 22px; font-weight: 700; cursor: pointer }
+.Loja_Stepper b { min-width: 28px; text-align: center; font-size: 1.2rem }
+.Loja_Acoes { display: flex; flex-direction: column; gap: 10px }
+.Loja_Nota { font-size: .85rem; opacity: .7 }
+
+/* busca */
+.Loja_Panel--busca { top: 0; width: min(560px, 100vw) }
+.Loja_Busca_Campo { width: 100%; border: 2px solid var(--lav); border-radius: 999px; padding: 14px 20px; font: 500 16px var(--text-font); background: #fff; color: var(--ink) }
+.Loja_Res { display: flex; align-items: center; gap: 14px; padding: 10px 4px; text-decoration: none; color: var(--ink); border-bottom: 1px solid rgba(43, 29, 56, .1) }
+.Loja_Res img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; background: var(--lav-soft) }
+.Loja_Res span { display: flex; flex-direction: column; gap: 3px }
+.Loja_Res small { opacity: .7 }
+
+/* gatito */
+.Loja_Modal { position: fixed; inset: 0; z-index: 9100; display: none; align-items: center; justify-content: center; background: rgba(43, 29, 56, .7); padding: 20px }
+.Loja_Modal.open { display: flex }
+.Loja_Modal_Box { background: #fff; color: var(--ink); border-radius: 24px; padding: 18px; max-width: 340px; text-align: center }
+.Loja_Modal_Box img { width: 100%; border-radius: 16px; display: block }
+.Loja_Modal_Box p { margin: 14px 0 12px; font: 700 1.1rem var(--text-font) }
+
+/* cards de produto (grade) */
+.Product_Item .Loja_Btn { margin-top: 10px }
+.Product_Item form, form.Product_Item { margin: 0 }
+
+/* outros doces */
+.Loja_Outros { padding: 4rem 1.25rem; max-width: 1200px; margin: 0 auto }
+.Loja_Outros h2 { font: 800 clamp(2rem, 6vw, 3.4rem) var(--title-font); text-transform: uppercase; margin: 0 0 .6rem; overflow-wrap: anywhere }
+.Loja_Outros > p { max-width: 640px; margin: 0 0 2rem; line-height: 1.35 }
+.Loja_Outros_Grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem }
+.Loja_Outro { background: #fff; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(43, 29, 56, .08) }
+.Loja_Outro img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block }
+.Loja_Outro div { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1 }
+.Loja_Outro h3 { margin: 0; font: 800 1.25rem var(--title-font) }
+.Loja_Outro p { margin: 0; font-size: .95rem; line-height: 1.35; opacity: .8; flex: 1 }
+
+/* vídeo opcional do hero */
+.Hero_Video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none }
+.Hero_Video.on { opacity: 1 }
+
+/* fotos da página Sobre: sem cortar */
+.Timeline_Image img { object-fit: contain !important; height: auto !important; width: 100%; background: var(--lav-soft) }
+
+/* ===== celular ===== */
+html, body { overflow-x: clip }
+h1, h2, h3, p { overflow-wrap: break-word; hyphens: manual }
+@media (max-width: 768px) {
+  .Loja_Panel { width: 100vw }
+  .Loja_Chip { flex: 1 1 100% }
+  .Loja_Btn { min-height: 56px; font-size: 1.05rem }
+  h1 { font-size: clamp(1.8rem, 9.4vw, 4rem) !important; line-height: 1 !important }
+  .Footer_Middle .Footer_Big_Logo_Text { font-size: 34cqw }
+  .Loja_Outros { padding: 2.5rem 1rem }
+  .Loja_Outros_Grid { grid-template-columns: 1fr 1fr; gap: .9rem }
+  .Loja_Outro div { padding: 12px }
+  .Loja_Outro h3 { font-size: 1.05rem }
+  .Loja_Outro .Loja_Btn { font-size: .9rem; min-height: 46px; padding: 10px 12px }
+}
+@media (max-width: 420px) { .Loja_Outros_Grid { grid-template-columns: 1fr } }

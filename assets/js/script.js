@@ -813,23 +813,6 @@ allCollectionProducts.forEach((product, id) => {
     bro.querySelector(".Product_Item_Title").style.height = maxHeight + "px"
   })
 });
-const productPageSections = document.querySelectorAll(".Product_Page_Section");
-productPageSections.forEach(section => {
-  const variantsJSON = JSON.parse(section.dataset.productInfo),
-    price = section.querySelector(".Product_Price"),
-    form = section.querySelector(".Product_Form"),
-    id = form.querySelector("input[type*='hidden']"),
-    options = form.querySelectorAll("select");
-  form.addEventListener("change", () => {
-    const selectedVariant = variantsJSON.find(v => {
-      let result = !0;
-      return options.forEach((o, i) => {
-        v[`option${i+1}`] != o.value && (result = !1)
-      }), result
-    });
-    id.value = selectedVariant.id, price.textContent = formatPrice(selectedVariant.price)
-  })
-});
 const productMediaCarousels = document.querySelectorAll(".Product_Media");
 productMediaCarousels.forEach(carousel => {
   const mainMedia = Array.from(carousel.querySelectorAll(".Main_Image")),
@@ -862,19 +845,7 @@ productMediaCarousels.forEach(carousel => {
     })
   })
 });
-// Botão de idioma PT-BR <-> EN: usa o <link rel="alternate" hreflang="..."> de cada página
 document.addEventListener("DOMContentLoaded", () => {
-  const menuMobile = document.querySelector(".Menu_Drawer_Links"),
-    menu2 = document.querySelector(".main-menu"),
-    otherLang = isPT ? "en" : "pt-BR",
-    alternate = document.querySelector(`link[rel="alternate"][hreflang="${otherLang}"]`);
-  if (!alternate) return;
-  const languageSelector = document.createElement("li"),
-    languageSelectorLink = document.createElement("a");
-  languageSelectorLink.classList.add("Grow_Anim"), languageSelectorLink.textContent = isPT ? "English" : "Português", languageSelectorLink.href = alternate.href, languageSelector.appendChild(languageSelectorLink), menu2.appendChild(languageSelector);
-  const menuLanguageSelector = languageSelector.cloneNode(!0);
-  menuLanguageSelector.querySelector("a").classList.add("Menu_Drawer_Link"), menuMobile.appendChild(menuLanguageSelector)
-}), document.addEventListener("DOMContentLoaded", () => {
   const footerWrapper = document.querySelector(".Footer_Wrapper"),
     footer2 = document.querySelector(".Footer_Wrapper footer");
   if (!footerWrapper) return;
