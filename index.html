@@ -57,6 +57,17 @@
     display: block;
     pointer-events: none;
   }
+
+  /* Garante que o vídeo do Hero ocupe toda a área corretamente */
+  .Hero_Back_Img video.Hero_Video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
 </style>
 <script>
   window.favicon1 = "assets/img/favicon-2.png";
@@ -122,6 +133,10 @@
 
       if (window.lenis && typeof window.lenis.start === "function") {
         window.lenis.start();
+      }
+
+      if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === "function") {
+        window.ScrollTrigger.refresh();
       }
 
       if (overlay) {
@@ -303,8 +318,8 @@
 <section class="Section Hero_Section Dark_Section">
 <div class="Hero_Wrapper Parallax_Wrapper">
 <div class="Hero_Back_Img Parallax_Back_Hero Fluid">
-<img alt="" height="1393" src="assets/video/hero.mp4" width="1920"/>
-<video class="Hero_Video" data-hero-video="" muted="" playsinline="" preload="auto"></video></div>
+<video class="Hero_Video" data-hero-video="" muted="" playsinline="" preload="auto" src="assets/video/hero.mp4" webkit-playsinline=""></video>
+</div>
 <div class="Hero_Content Parallax_Hero_Front">
 <div class="Hero_Heading_wrapper">
 <h1 class="Hero_Heading Cool_Text_Anim Words">Bolos com Carinho</h1>
@@ -1107,5 +1122,73 @@
 <aside aria-label="Buscar" class="Loja_Panel Loja_Panel--busca" data-panel="search"><div class="Loja_Head"><h3>Buscar</h3><button aria-label="Fechar" class="Loja_Fechar" data-close="">×</button></div>
 <div class="Loja_Body" data-lenis-prevent=""><input autocomplete="off" class="Loja_Busca_Campo" data-search-input="" placeholder="Ex.: chocolate, goiabada, coco…" type="search"/><div data-search-results=""></div></div></aside>
 <div class="Loja_Modal" data-modal-gatito=""><div class="Loja_Modal_Box"><img alt="Gatito" src="assets/img/gatito.gif"/><p>Ahoy! El gatito esta perdidito</p><button class="Loja_Btn Loja_Btn--ghost Loja_Btn--small" data-modal-close="">Fechar</button></div></div>
-<link href="assets/css/loja.css" media="all" rel="stylesheet" type="text/css"/></body>
+<link href="assets/css/loja.css" media="all" rel="stylesheet" type="text/css"/>
+
+<script>
+  window.addEventListener("load", function () {
+    const heroSection = document.querySelector(".Hero_Section");
+    const heroVideo = document.querySelector("[data-hero-video]");
+
+    if (!heroSection || !heroVideo || !window.gsap || !window.ScrollTrigger) return;
+
+    window.gsap.registerPlugin(window.ScrollTrigger);
+
+    // Garante que o vídeo fique pausado e pronto para ser controlado pelo scroll
+    heroVideo.pause();
+    heroVideo.currentTime = 0;
+
+    // Desbloqueia a decodificação de frames no iOS/Safari no primeiro toque
+    const unlockVideoFrames = () => {
+      heroVideo.play().then(() => {
+        heroVideo.pause();
+      }).catch(() => {});
+    };
+    window.addEventListener("touchstart", unlockVideoFrames, { once: true, passive: true });
+    window.addEventListener("wheel", unlockVideoFrames, { once: true, passive: true });
+
+    let targetTime = 0;
+    let rafPending = false;
+
+    function syncVideoFrame() {
+      rafPending = false;
+      if (!heroVideo.duration || isNaN(heroVideo.duration)) return;
+
+      // Evita travar no último milissegundo onde alguns navegadores voltam ao frame 0
+      const maxTime = Math.max(0, heroVideo.duration - 0.04);
+      const clamped = Math.min(Math.max(0, targetTime), maxTime);
+
+      if (Math.abs(heroVideo.currentTime - clamped) > 0.01) {
+        try {
+          heroVideo.currentTime = clamped;
+        } catch (e) {}
+      }
+    }
+
+    function initHeroScrollScrub() {
+      window.ScrollTrigger.create({
+        trigger: heroSection,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: function (self) {
+          if (!heroVideo.duration || isNaN(heroVideo.duration)) return;
+          targetTime = self.progress * heroVideo.duration;
+          if (!rafPending) {
+            rafPending = true;
+            requestAnimationFrame(syncVideoFrame);
+          }
+        }
+      });
+      window.ScrollTrigger.refresh();
+    }
+
+    if (heroVideo.readyState >= 1) {
+      initHeroScrollScrub();
+    } else {
+      heroVideo.addEventListener("loadedmetadata", initHeroScrollScrub, { once: true });
+    }
+  });
+</script>
+</body>
 </html>
