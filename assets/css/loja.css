@@ -98,6 +98,7 @@ body.Loja_Travado { overflow: hidden }
 /* vídeo opcional do hero */
 .Hero_Video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none }
 .Hero_Video.on { opacity: 1 }
+@media (max-width: 768px) { .Hero_Video { object-position: 72% center } }
 
 /* fotos da página Sobre: sem cortar */
 .Timeline_Image img { object-fit: contain !important; height: auto !important; width: 100%; background: var(--lav-soft) }
