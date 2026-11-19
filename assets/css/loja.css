@@ -129,3 +129,7 @@ h1, h2, h3, p { overflow-wrap: break-word; hyphens: manual }
   .Loja_Outro { flex: 0 0 78%; scroll-snap-align: center }
   .Loja_Outro img { aspect-ratio: 1/1; height: auto }
 }
+
+/* destino da busca: card da prateleira */
+.Loja_Outro { scroll-margin-top: 110px }
+.Loja_Outro:target { outline: 3px solid var(--lav, #7d5a9b); outline-offset: 3px }
