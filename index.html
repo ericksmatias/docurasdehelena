@@ -79,64 +79,6 @@
 <script defer="" src="assets/js/script.js"></script>
 <script defer="" src="assets/js/canvas.js"></script>
 <script defer="" src="assets/js/loja.js"></script>
-<style id="hero-scroll-hint-style">
-  #hero-scroll-hint {
-    position: fixed;
-    left: 50%;
-    bottom: 22px;
-    bottom: calc(22px + env(safe-area-inset-bottom, 0px));
-    transform: translate3d(-50%, 0, 0);
-    z-index: 15;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    color: #ffffff;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-
-  html.intro-locked #hero-scroll-hint,
-  body.intro-locked #hero-scroll-hint {
-    opacity: 0;
-  }
-
-  #hero-scroll-hint.is-hidden {
-    opacity: 0;
-    transform: translate3d(-50%, 10px, 0);
-  }
-
-  #hero-scroll-hint .hero-scroll-hint__svg {
-    width: 18px;
-    height: 18px;
-    display: block;
-    animation: heroScrollHintBounce 1.8s ease-in-out infinite;
-  }
-
-  @keyframes heroScrollHintBounce {
-    0%, 100% {
-      transform: translateY(-2px);
-      opacity: 0.75;
-    }
-    50% {
-      transform: translateY(3px);
-      opacity: 1;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #hero-scroll-hint .hero-scroll-hint__svg {
-      animation: none;
-    }
-  }
-</style>
 </head>
 <body class="intro-locked">
 <div aria-hidden="true" id="intro-overlay">
@@ -1247,30 +1189,6 @@
       heroVideo.addEventListener("loadedmetadata", initHeroScrollScrub, { once: true });
     }
   });
-</script>
-<div aria-hidden="true" id="hero-scroll-hint">
-<svg class="hero-scroll-hint__svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
-<path d="M6 9l6 6 6-6"></path>
-</svg>
-</div>
-<script id="hero-scroll-hint-script">
-  (function () {
-    var hint = document.getElementById("hero-scroll-hint");
-    if (!hint) return;
-
-    function updateScrollHint() {
-      var y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-      if (y > 24) {
-        hint.classList.add("is-hidden");
-      } else {
-        hint.classList.remove("is-hidden");
-      }
-    }
-
-    window.addEventListener("scroll", updateScrollHint, { passive: true });
-    window.addEventListener("load", updateScrollHint);
-    updateScrollHint();
-  })();
 </script>
 </body>
 </html>
