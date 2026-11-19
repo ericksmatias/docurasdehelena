@@ -90,7 +90,7 @@ body.Loja_Travado { overflow: hidden }
 .Loja_Outros > p { max-width: 640px; margin: 0 0 2rem; line-height: 1.35 }
 .Loja_Outros_Grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem }
 .Loja_Outro { background: #fff; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(43, 29, 56, .08) }
-.Loja_Outro img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block }
+.Loja_Outro img { width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; display: block }
 .Loja_Outro div { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1 }
 .Loja_Outro h3 { margin: 0; font: 800 1.25rem var(--title-font) }
 .Loja_Outro p { margin: 0; font-size: .95rem; line-height: 1.35; opacity: .8; flex: 1 }
@@ -118,7 +118,14 @@ h1, h2, h3, p { overflow-wrap: break-word; hyphens: manual }
   .Loja_Outro h3 { font-size: 1.05rem }
   .Loja_Outro .Loja_Btn { font-size: .9rem; min-height: 46px; padding: 10px 12px }
 }
-@media (max-width: 420px) { .Loja_Outros_Grid { grid-template-columns: 1fr } }
 
 /* hero fixo durante o vídeo: sem parallax do tema */
 .Hero_Wrapper .Parallax_Back_Hero, .Hero_Wrapper .Parallax_Hero_Front { transform: none !important }
+
+/* Prateleira da Felicidade: no celular vira prateleira deslizante, sem esticar as fotos */
+@media (max-width: 768px) {
+  .Loja_Outros_Grid { display: flex; grid-template-columns: none; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 4px 2px 18px; margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; scrollbar-width: none; border-bottom: 10px solid var(--lav-soft, #e9defa); border-radius: 0 0 6px 6px }
+  .Loja_Outros_Grid::-webkit-scrollbar { display: none }
+  .Loja_Outro { flex: 0 0 78%; scroll-snap-align: center }
+  .Loja_Outro img { aspect-ratio: 1/1; height: auto }
+}
