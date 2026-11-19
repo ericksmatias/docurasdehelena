@@ -119,3 +119,6 @@ h1, h2, h3, p { overflow-wrap: break-word; hyphens: manual }
   .Loja_Outro .Loja_Btn { font-size: .9rem; min-height: 46px; padding: 10px 12px }
 }
 @media (max-width: 420px) { .Loja_Outros_Grid { grid-template-columns: 1fr } }
+
+/* hero fixo durante o vídeo: sem parallax do tema */
+.Hero_Wrapper .Parallax_Back_Hero, .Hero_Wrapper .Parallax_Hero_Front { transform: none !important }
