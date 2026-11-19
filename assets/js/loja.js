@@ -165,6 +165,16 @@ if (hv && hv.getAttribute("data-hero-video")) {
   hv.replaceWith(cv);
   const ctx = cv.getContext("2d");
   const secao = cv.closest("section") || cv.parentElement;
+  const wrap = cv.closest(".Hero_Wrapper") || secao;
+  // Hero fixo na tela enquanto o vídeo roda; depois o resto do site rola.
+  const ajustar = () => {
+    extra = Math.round(window.innerHeight * 1.6);
+    secao.style.height = (wrap.offsetHeight + extra) + "px";
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  };
+  let extra = 1;
+  wrap.style.position = "sticky"; wrap.style.top = "0";
+  ajustar(); window.addEventListener("resize", ajustar);
   const img = $("img", cv.parentElement);
   const quadros = new Array(TOTAL);
   let desenhado = -1, pos = 0, pronto = false;
@@ -176,7 +186,7 @@ if (hv && hv.getAttribute("data-hero-video")) {
   carregar(0);
   for (let i = 1; i < TOTAL; i++) setTimeout(() => carregar(i), 0);
   const loop = () => {
-    const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, secao.offsetHeight)));
+    const p = Math.min(1, Math.max(0, -secao.getBoundingClientRect().top / extra));
     pos += (p * (TOTAL - 1) - pos) * 0.18;
     if (Math.abs(p * (TOTAL - 1) - pos) < 0.01) pos = p * (TOTAL - 1);
     let i = Math.round(pos);
