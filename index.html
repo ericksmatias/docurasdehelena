@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html data-root="./" lang="pt-BR">
+<html class="intro-locked" data-root="./" lang="pt-BR">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#7d5a9b" name="theme-color"/>
@@ -11,6 +11,53 @@
 <link href="assets/css/parallax.css" media="all" rel="stylesheet" type="text/css"/>
 <link href="assets/css/utils.css" media="all" rel="stylesheet" type="text/css"/>
 <link href="assets/css/custom.css" media="all" rel="stylesheet" type="text/css"/>
+<style id="intro-overlay-style">
+  html.intro-locked,
+  body.intro-locked {
+    overflow: hidden !important;
+    height: 100% !important;
+    touch-action: none !important;
+  }
+
+  #intro-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 2147483647;
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity;
+  }
+
+  #intro-overlay.is-fading {
+    opacity: 0;
+  }
+
+  #intro-overlay.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #intro-overlay video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+</style>
 <script>
   window.favicon1 = "assets/img/favicon-2.png";
   window.favicon2 = "assets/img/favicon-3.png";
@@ -22,7 +69,128 @@
 <script defer="" src="assets/js/canvas.js"></script>
 <script defer="" src="assets/js/loja.js"></script>
 </head>
-<body>
+<body class="intro-locked">
+<div aria-hidden="true" id="intro-overlay">
+<video autoplay="" id="intro-video" muted="" playsinline="" preload="auto" src="assets/video/intro.mp4" webkit-playsinline=""></video>
+</div>
+<script>
+  (function () {
+    const overlay = document.getElementById("intro-overlay");
+    const video = document.getElementById("intro-video");
+    const html = document.documentElement;
+    const body = document.body;
+
+    let fadingStarted = false;
+    let interactionUnlocked = false;
+    let videoPlaying = false;
+
+    function blockScrollInput(e) {
+      if (!interactionUnlocked) {
+        e.preventDefault();
+      }
+    }
+
+    window.addEventListener("wheel", blockScrollInput, { passive: false });
+    window.addEventListener("touchmove", blockScrollInput, { passive: false });
+
+    function pauseInitialAnimations() {
+      if (fadingStarted) return;
+      if (window.gsap && window.gsap.globalTimeline) {
+        window.gsap.globalTimeline.pause();
+      }
+      if (window.lenis && typeof window.lenis.stop === "function") {
+        window.lenis.stop();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(pauseInitialAnimations, 0);
+    });
+
+    window.addEventListener("load", function () {
+      setTimeout(pauseInitialAnimations, 0);
+    });
+
+    function unlockInteraction() {
+      if (interactionUnlocked) return;
+      interactionUnlocked = true;
+
+      html.classList.remove("intro-locked");
+      body.classList.remove("intro-locked");
+      window.removeEventListener("wheel", blockScrollInput);
+      window.removeEventListener("touchmove", blockScrollInput);
+
+      if (window.lenis && typeof window.lenis.start === "function") {
+        window.lenis.start();
+      }
+
+      if (overlay) {
+        overlay.classList.add("is-done");
+        setTimeout(function () {
+          if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+          }
+        }, 100);
+      }
+    }
+
+    function startFadeOut() {
+      if (fadingStarted) return;
+      fadingStarted = true;
+
+      // Inicia o esmaecimento suave do vídeo
+      if (overlay) {
+        overlay.classList.add("is-fading");
+      }
+
+      // Libera as primeiras animações do site (GSAP / pageload / hero) enquanto o vídeo dissolve
+      if (window.gsap && window.gsap.globalTimeline) {
+        window.gsap.globalTimeline.resume();
+      }
+      if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === "function") {
+        window.ScrollTrigger.refresh();
+      }
+
+      // Mantém os toques bloqueados durante o fade (850ms) + conclusão das animações iniciais (650ms)
+      setTimeout(unlockInteraction, 1500);
+    }
+
+    if (video) {
+      video.muted = true;
+
+      video.addEventListener("playing", function () {
+        videoPlaying = true;
+      });
+
+      // Começa o fade nos últimos 0.6s do vídeo (~3.4s) para dissolver ainda em movimento
+      video.addEventListener("timeupdate", function () {
+        if (video.duration && video.currentTime >= Math.max(0.5, video.duration - 0.6)) {
+          startFadeOut();
+        }
+      });
+
+      video.addEventListener("ended", startFadeOut);
+      video.addEventListener("error", startFadeOut);
+
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(function () {
+          // Caso o navegador/modo economia bloqueie autoplay, segue após o tempo previsto
+          setTimeout(startFadeOut, 3400);
+        });
+      }
+    }
+
+    // Trava de segurança para garantir que nunca passe de ~4s mesmo se o vídeo demorar a iniciar
+    setTimeout(function () {
+      if (!videoPlaying) {
+        startFadeOut();
+      }
+    }, 3600);
+
+    setTimeout(startFadeOut, 4300);
+  })();
+</script>
 <svg class="pageload" data-name="Calque 2" viewbox="0 0 342 277" xmlns="http://www.w3.org/2000/svg">
 <path class="anim-path" d="M 0 0 h 342 v 277 S 111 535 0 277 V 0 Z" data-end-path="M 0 0 h 342 v 0 S 272 -116 0 0 V 0 Z" data-name="Calque 1"></path>
 </svg>
