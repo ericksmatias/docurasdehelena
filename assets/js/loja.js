@@ -21,6 +21,14 @@ const PRODUTOS = [
   { id: "laranja",     nome: "Bolo de Laranja",   path: "produtos/bolo-de-laranja/",   img: "produto-laranja.avif",   coberturas: ["Cobertura cremosa de laranja"] },
 ];
 
+// Doces fora do catálogo de bolos (só busca/links; não entram na comanda). Edite aqui.
+const OUTROS = [
+  { id: "pote",     nome: "Delícias no pote", desc: "ninho com uvas morangos brigadeiro intenso doce de leite pote", img: "doce-pote.avif" },
+  { id: "caixetas", nome: "Caixetas", desc: "floresta negra chocolate cereja doce de leite coco chocolate branco caixeta", img: "doce-caixeta.avif" },
+  { id: "pudim",    nome: "Pudim de leite", desc: "pudim cremoso", img: "doce-pudim.avif" },
+  { id: "finos",    nome: "Bem casados e docinhos finos", desc: "brigadeiro brulée paçoca noir bem casado casamento festa doce fino", img: "doce-fino-bemcasado.avif" },
+];
+
 const ROOT = document.documentElement.dataset.root || "./";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
@@ -116,12 +124,16 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") { fecharTudo(); const m = $("[data-modal-gatito]"); m && m.classList.remove("open"); } });
 
 /* ---------- busca (lupa) ---------- */
+const semAcento = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 function buscar(q) {
-  const out = $("[data-search-results]"); q = q.trim().toLowerCase();
-  const lista = PRODUTOS.filter(p => !q || (p.nome + " " + p.coberturas.join(" ")).toLowerCase().includes(q));
-  out.innerHTML = lista.length ? lista.map(p => `
-    <a class="Loja_Res" href="${ROOT}${p.path}"><img src="${ROOT}assets/img/${p.img}" alt=""><span><strong>${p.nome}</strong><small>${brl(PRECO_SEM)} a ${brl(PRECO_COM)}</small></span></a>`).join("")
-    : '<p class="Loja_Vazio">Nenhum bolo encontrado.<br>Pergunte pelo WhatsApp: pode ser um doce sob encomenda!</p>';
+  const out = $("[data-search-results]"); q = semAcento(q.trim());
+  const bolos = PRODUTOS.filter(p => !q || semAcento(p.nome + " " + p.coberturas.join(" ")).includes(q));
+  const outros = OUTROS.filter(o => !q || semAcento(o.nome + " " + o.desc).includes(q));
+  const html = bolos.map(p => `
+    <a class="Loja_Res" href="${ROOT}${p.path}"><img src="${ROOT}assets/img/${p.img}" alt=""><span><strong>${p.nome}</strong><small>${brl(PRECO_SEM)} a ${brl(PRECO_COM)}</small></span></a>`).concat(outros.map(o => `
+    <a class="Loja_Res" href="${ROOT}bolos/#${o.id}"><img src="${ROOT}assets/img/${o.img}" alt=""><span><strong>${o.nome}</strong><small>Sob encomenda</small></span></a>`));
+  out.innerHTML = html.length ? html.join("")
+    : '<p class="Loja_Vazio">Nada encontrado.<br>Pergunte pelo WhatsApp: pode ser um doce sob encomenda!</p>';
 }
 const campoBusca = $("[data-search-input]");
 if (campoBusca) { campoBusca.addEventListener("input", () => buscar(campoBusca.value)); buscar(""); }
